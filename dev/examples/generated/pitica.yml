@@ -1,0 +1,42 @@
+
+Person:
+  dni:
+    type: attribute
+    attribute_type: string
+    unique: true
+    mandatory: true
+  name:
+    type: attribute
+    attribute_type: string
+  age:
+    type: attribute
+    attribute_type: integer
+
+Student:
+  person:
+    type: relation
+    mandatory: true
+    relation_type: one2one
+    relation_target: Person
+  subjects:
+    type: relation
+    relation_type: many2many
+    relation_target: Subject
+
+Teacher:
+  person:
+    type: relation
+    mandatory: true
+    relation_type: one2one
+    relation_target: Person
+
+Subject:
+  name:
+    type: attribute
+    attribute_type: string
+    mandatory: true
+    unique: true
+  teacher:
+    type: relation
+    relation_type: one2many
+    relation_target: Teacher
