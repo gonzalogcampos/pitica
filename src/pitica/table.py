@@ -69,7 +69,10 @@ class Table:
                     raise Exception(
                         f"Relation name {relation_name} is forbidden.")
                 target_name = relation_info[_constants.K_RELATION_TARGET]
-                target = [t for t in tables if t.name == target_name]
+                if target_name == table_name:
+                    target = [table]
+                else:
+                    target = [t for t in tables if t.name == target_name]
                 if len(target) != 1:
                     raise Exception(
                         f"Unable to create a relation between {table_name} and {target_name}")
@@ -85,16 +88,16 @@ class Table:
                         relation_name, target.id, mandatory, False)
                 elif relation_type == _constants.MANY2MANY:
                     relation_tables.append(
-                        Table._create_m2m_relation(table, target))
+                        Table._create_m2m_relation(table, target, relation_name))
 
             tables.append(table)
         return tables + relation_tables
 
     @staticmethod
-    def _create_m2m_relation(source: Table, target: Table) -> Table:
-        table = Table(f"{source.name}_{target.name}")
+    def _create_m2m_relation(source: Table, target: Table, relation_name: str) -> Table:
+        table = Table(f"{source.name}_{relation_name}")
         table.add_relation(source.name, source.id, True, False)
-        table.add_relation(target.name, target.id, True, False)
+        table.add_relation(relation_name, target.id, True, False)
         table.is_relation = True
         return table
 
@@ -113,7 +116,7 @@ class Table:
                 if current_table in ordered_tables:
                     continue
                 for relation in get_relations(current_table, all_tables):
-                    if relation not in ordered_tables:
+                    if relation not in ordered_tables and relation is not current_table:
                         break
                 else:
                     ordered_tables.append(current_table)

@@ -1,0 +1,97 @@
+Module:
+  name:
+    type: attribute
+    attribute_type: string
+    mandatory: true
+    unique: true
+
+
+Activity:
+  module:
+    type: relation
+    mandatory: true
+    relation_type: one2many
+    relation_target: Module
+  name:
+    type: attribute
+    attribute_type: string
+    mandatory: true
+    unique: true
+
+
+Occurrence:
+  alias:
+    type: attribute
+    attribute_type: string
+    mandatory: false
+    unique: false
+  scheduled_id:
+    type: attribute
+    attribute_type: string
+    mandatory: true
+    unique: false
+  duration:
+    type: attribute
+    attribute_type: integer
+    mandatory: true
+    unique: false
+  start:
+    type: attribute
+    attribute_type: datetime
+    mandatory: true
+    unique: false
+  started:
+    type: attribute
+    attribute_type: datetime
+    mandatory: true
+    unique: false
+  finished:
+    type: attribute
+    attribute_type: datetime
+    mandatory: true
+    unique: false
+  status:
+    type: attribute
+    attribute_type: string
+    unique: false
+    mandatory: true
+  compound_id:
+    type: attribute
+    attribute_type: string
+    mandatory: false
+    unique: false
+  domain:
+    type: relation
+    mandatory: true
+    relation_type: one2many
+    unique: false
+    relation_target: Domain
+  activity:
+    type: relation
+    mandatory: true
+    relation_type: one2many
+    unique: false
+    relation_target: Activity
+
+Domain:
+  name:
+    type: attribute
+    attribute_type: string
+    mandatory: true
+    unique: true
+  paused:
+    type: attribute
+    attribute_type: boolean
+    mandatory: true
+    unique: false
+  state:
+    type: attribute
+    attribute_type: string
+    mandatory: false
+    unique: false
+  module:
+    type: relation
+    mandatory: false
+    relation_type: many2many
+    unique: false
+    relation_target: Module

@@ -165,6 +165,7 @@ class ClassGenerator:
             else:
                 continue
 
+            relation_name = relation.attribute.name
             table_name = table.name
             target_type = target.name
             target_name = target_type[0].lower() + target_type[1:]
@@ -175,11 +176,11 @@ class ClassGenerator:
                 f"      return self._select_many2many({target_type}, '{table_name}')",
                 "",
                 f"   def add_{target_name}(self, {target_name}: _Entity) -> _Self:",
-                f"      self._add_many2many({target_name}, '{table_name}')",
+                f"      self._add_many2many({target_name}, '{table_name}', '{relation_name}')",
                 f"      return self",
                 "",
                 f"   def remove_{target_name}(self, {target_name}: _Entity) -> _Self:",
-                f"      self._remove_many2many({target_name}, '{table_name}')",
+                f"      self._remove_many2many({target_name}, '{table_name}', '{relation_name}')",
                 f"      return self",
                 "",
             ]

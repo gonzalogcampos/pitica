@@ -74,25 +74,25 @@ class Entity:
 
     def _persist_relations(self):
         self_classname = self.__class_type.__name__
-        for relation_table, target_classname in self.__relation_changes:
+        for relation_table, relation_name in self.__relation_changes:
             changes_data = self.__relation_changes[(
-                relation_table, target_classname)]
+                relation_table, relation_name)]
 
             for add_id in changes_data["add"]:
-                data = {target_classname: add_id,
+                data = {relation_name: add_id,
                         self_classname: self.get_id()}
                 Entity._get_persistance().insert(relation_table, data)
                 _logger.debug(
-                    f"Adding relation {target_classname}:{add_id} {self_classname}:{self.get_id()}")
+                    f"Adding relation {relation_name}:{add_id} {self_classname}:{self.get_id()}")
 
             for remove_id in changes_data["remove"]:
                 filter_group = _FilterGroup()
-                filter_group.and_(_Filter(target_classname,
+                filter_group.and_(_Filter(relation_name,
                                           _FilterOperator.EQUALS, remove_id))
                 filter_group.and_(_Filter(self.__class_type.__name__,
                                           _FilterOperator.EQUALS, self.get_id()))
                 _logger.debug(
-                    f"Removing relation {target_classname}:{remove_id} {self_classname}:{self.get_id()}")
+                    f"Removing relation {relation_name}:{remove_id} {self_classname}:{self.get_id()}")
                 Entity._get_persistance().delete(relation_table, filter_group)
 
     def _notify_relations(self):
@@ -155,20 +155,20 @@ class Entity:
 
         self.__changes[id] = {"from": from_value, "to": value}
 
-    def _add_many2many(self, target: Entity, relation_table: str) -> None:
-        self._edit_many2many(target, relation_table, "add")
+    def _add_many2many(self, target: Entity, relation_table: str, relation_name: str) -> None:
+        self._edit_many2many(target, relation_table, relation_name, "add")
 
-    def _remove_many2many(self, target: Entity, relation_table: str) -> None:
-        self._edit_many2many(target, relation_table, "remove")
+    def _remove_many2many(self, target: Entity, relation_table: str, relation_name: str) -> None:
+        self._edit_many2many(target, relation_table, relation_name, "remove")
 
-    def _edit_many2many(self, target: Entity, relation_table: str, change_type: str) -> None:
+    def _edit_many2many(self, target: Entity, relation_table: str, relation_name: str, change_type: str) -> None:
         added = "add"
         removed = "remove"
 
         add_to = change_type
         rem_to = added if change_type == removed else removed
 
-        key = (relation_table, target.__class_type.__name__)
+        key = (relation_table, relation_name)
 
         if key not in self.__relation_changes:
             self.__relation_changes[key] = {

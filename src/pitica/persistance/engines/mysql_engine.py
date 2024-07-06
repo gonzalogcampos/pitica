@@ -62,13 +62,21 @@ class MySql(_IEngine):
 
         try:
             self._reconnect()
-            for table in database_schema:
-                self._create_table(table)
         except Exception as err:
             self._drop_database()
-            msg = f"Unable to create {self._database} database"
+            msg = f"Unable to connect to {self._database} database"
             _logger.error(msg)
             raise Exception(msg)
+
+        for table in database_schema:
+            try:
+                self._create_table(table)
+            except Exception as err:
+                self._drop_database()
+                msg = f"Unable to create table {table.name}"
+                _logger.error(msg)
+                _logger.error(err)
+                raise Exception(msg)
 
         return True
 
