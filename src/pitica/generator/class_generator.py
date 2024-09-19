@@ -165,7 +165,14 @@ class ClassGenerator:
             else:
                 continue
 
-            relation_name = relation.attribute.name
+            relation_a = table.relations[0]
+            relation_b = table.relations[1]
+            relation_a_colum = relation_a.attribute.name
+            relation_a_table = relation_a.target_attribute.table.name
+            relation_b_colum = relation_b.attribute.name
+            relation_b_table = relation_b.target_attribute.table.name
+
+            attribute_name = relation.attribute.name
             table_name = table.name
             target_type = target.name
             target_name = target_type[0].lower() + target_type[1:]
@@ -173,14 +180,14 @@ class ClassGenerator:
             lines += [
                 f"   def get_{target_name}(self) -> _List[_Entity]:",
                 f"      from .{self._lower(target_type)} import {target_type}",
-                f"      return self._select_many2many({target_type}, '{table_name}')",
+                f"      return self._select_many2many({target_type}, '{table_name}', '{relation_a_colum}', '{relation_a_table}', '{relation_b_colum}', '{relation_b_table}')",
                 "",
                 f"   def add_{target_name}(self, {target_name}: _Entity) -> _Self:",
-                f"      self._add_many2many({target_name}, '{table_name}', '{relation_name}')",
+                f"      self._add_many2many({target_name}, '{table_name}', '{attribute_name}')",
                 f"      return self",
                 "",
                 f"   def remove_{target_name}(self, {target_name}: _Entity) -> _Self:",
-                f"      self._remove_many2many({target_name}, '{table_name}', '{relation_name}')",
+                f"      self._remove_many2many({target_name}, '{table_name}', '{attribute_name}')",
                 f"      return self",
                 "",
             ]

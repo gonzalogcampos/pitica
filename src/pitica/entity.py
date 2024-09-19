@@ -125,11 +125,16 @@ class Entity:
     def as_dict(self) -> dict:
         return {}
 
-    def _select_many2many(self, class_type: type, relation_table: str) -> _List[Entity]:
+    def _select_many2many(self, class_type: type, relation_table: str,
+                          a_colum: str, a_table: str, b_colum: str, b_table) -> _List[Entity]:
         items = Entity._get_persistance().select_many2many(table=class_type.__name__,
-                                                           relation_table=relation_table,
                                                            target=self.__class_type.__name__,
-                                                           target_id=self.get_id()
+                                                           target_id=self.get_id(),
+                                                           relation_table=relation_table,
+                                                           a_colum=a_colum,
+                                                           a_table=a_table,
+                                                           b_colum=b_colum,
+                                                           b_table=b_table
                                                            )
         return [class_type.from_dict(item) for item in items]
 

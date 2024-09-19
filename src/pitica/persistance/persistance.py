@@ -87,13 +87,14 @@ class Persistance:
             result = self._database.select(table=table, filters=filters)
         return result
 
-    def select_many2many(self, table: str, relation_table: str, target: str, target_id: str):
+    def select_many2many(self, table: str, target: str,  target_id: str, relation_table: str,
+                         a_colum: str, a_table: str, b_colum: str, b_table: str):
         if not self._enabled:
             return None
         with _lock:
             _logger.debug(f"Selecting from relation table {relation_table}")
             result = self._database.select_many2many(
-                table, relation_table, target, target_id)
+                table, target, target_id, relation_table, a_colum, a_table, b_colum, b_table)
         return result
 
     def enable(self, value: bool) -> None:

@@ -140,12 +140,19 @@ class MySql(_IEngine):
                 {column_names[index]: x[index] for index in range(len(column_names))})
         return result_list
 
-    def select_many2many(self, table: str, relation_table: str, target: str, target_id: str) -> _List[dict]:
+    def select_many2many(self, table: str, target: str, target_id, relation_table: str,
+                         a_colum: str, a_table: str, b_colum: str, b_table) -> _List[dict]:
+
         query = f"SELECT {table}.* FROM {table}"
         query += f" INNER JOIN {relation_table}"
-        query += f" ON {table}.{_constants.ID_ATTRIBUTE} = {relation_table}.{table}"
-        query += f" INNER JOIN {target}"
-        query += f" ON {target}.{_constants.ID_ATTRIBUTE} = {relation_table}.{target}"
+        if table == a_table:
+            query += f" ON {a_table}.{_constants.ID_ATTRIBUTE} = {relation_table}.{a_colum}"
+            query += f" INNER JOIN {target}"
+            query += f" ON {b_table}.{_constants.ID_ATTRIBUTE} = {relation_table}.{b_colum}"
+        else:
+            query += f" ON {b_table}.{_constants.ID_ATTRIBUTE} = {relation_table}.{b_colum}"
+            query += f" INNER JOIN {target}"
+            query += f" ON {a_table}.{_constants.ID_ATTRIBUTE} = {relation_table}.{a_colum}"
         query += f" WHERE {target}.{_constants.ID_ATTRIBUTE} = {target_id}"
 
         cursor = self._mysql.cursor()

@@ -16,6 +16,9 @@ if __name__ == "__main__":
     directory = args.directory
     clean = args.clean
 
+    directory = "/home/exgggc/repositories/flyplan2/flyplan-base/src/repository"
+    clean = True
+
     if not directory:
         directory = "."
 
